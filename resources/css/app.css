@@ -3,8 +3,31 @@
 @tailwind utilities;
 
 @layer components {
-    .input {
-        @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-               focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
-    }
+  .input {
+    @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
+           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
+           transition-colors;
+  }
+  .label {
+    @apply block text-sm font-medium text-gray-700 mb-1;
+  }
+  .error {
+    @apply text-red-500 text-xs mt-1;
+  }
+  .btn-primary {
+    @apply bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700
+           transition-colors text-sm font-medium disabled:opacity-50;
+  }
+  .btn-success {
+    @apply bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700
+           transition-colors text-sm font-medium;
+  }
+  .btn-danger {
+    @apply bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700
+           transition-colors text-sm font-medium;
+  }
+  .btn-secondary {
+    @apply border border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50
+           transition-colors text-sm font-medium;
+  }
 }
