@@ -91,4 +91,10 @@ class DocumentRequestController extends Controller
 
         return $pdf->stream("{$document->request_number}.pdf");
     }
+    public function __construct() {
+        $this->middleware('can:view documents')->only(['index', 'show']);
+        $this->middleware('can:create documents')->only(['create', 'store']);
+        $this->middleware('can:process documents')->only('updateStatus');
+        $this->middleware('can:print documents')->only('print');
+    }   
 }

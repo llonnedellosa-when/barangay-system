@@ -13,10 +13,6 @@ class HandleInertiaRequests extends Middleware
      * @var string
      */
     protected $rootView = 'app';
-
-    /**
-     * Determine the current asset version.
-     */
     public function version(Request $request): ?string
     {
         return parent::version($request);
@@ -32,7 +28,20 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
             'auth' => [
-                'user' => $request->user(),
+                'user'        => $request->user(),
+                'roles'       => $request->user()?->getRoleNames() ?? [],
+                'permissions' => $request->user()?->getAllPermissions()->pluck('name') ?? [],
+            ],
+            'flash' => [
+                'success' => fn() => $request->session()->get('success'),
+                'error'   => fn() => $request->session()->get('error'),
+            ],
+
+            'auth' => [
+                'user'        => $request->user(),
+                'roles'       => $request->user()?->getRoleNames() ?? [],        // ← already safe
+                'permissions' => $request->user()?->getAllPermissions()
+                                    ->pluck('name') ?? [],                        // ← already safe
             ],
         ];
     }

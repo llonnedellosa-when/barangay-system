@@ -6,9 +6,17 @@ use App\Models\Blotter;
 use App\Models\Resident;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 class BlotterController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('can:view blotter')->only(['index', 'show']);
+        $this->middleware('can:create blotter')->only(['create', 'store']);
+        $this->middleware('can:manage blotter')->only('updateStatus');
+    }
+
     public function index(Request $request)
     {
         $blotters = Blotter::with('complainant')
@@ -36,7 +44,10 @@ class BlotterController extends Controller
             ->select(['id', 'first_name', 'last_name'])
             ->orderBy('last_name')
             ->get()
-            ->map(fn($r) => ['id' => $r->id, 'name' => $r->full_name]);
+            ->map(fn($r) => [
+                'id' => $r->id,
+                'name' => $r->full_name
+            ]);
 
         return Inertia::render('Blotter/Create', [
             'residents' => $residents,
@@ -55,7 +66,7 @@ class BlotterController extends Controller
             'narrative'           => 'required|string',
         ]);
 
-        $validated['handled_by'] = auth()->id();
+        $validated['handled_by'] = auth()->user()->id;
 
         Blotter::create($validated);
 

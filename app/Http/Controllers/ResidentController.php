@@ -6,8 +6,10 @@ use App\Models\Resident;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
+
 class ResidentController extends Controller
 {
+
     // LIST with search, filter, paginate
     public function index(Request $request)
     {
@@ -33,7 +35,7 @@ class ResidentController extends Controller
             'stats'     => $stats,
         ]);
     }
-
+    
     // SHOW single resident
     public function show(Resident $resident)
     {
@@ -122,4 +124,12 @@ class ResidentController extends Controller
         return redirect()->route('residents.index')
             ->with('success', 'Resident archived successfully.');
     }
+
+    public function __construct() {
+        $this->middleware('can:view residents')->only(['index', 'show']);
+        $this->middleware('can:create residents')->only(['create', 'store']);
+        $this->middleware('can:edit residents')->only(['edit', 'update']);
+        $this->middleware('can:delete residents')->only('destroy');
+    }
 }
+
