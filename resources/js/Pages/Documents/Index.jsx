@@ -1,10 +1,8 @@
 import { Head, Link, router } from "@inertiajs/react";
 import { useState } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import Pagination from "@/Components/Pagination";
-import StatusBadge from "@/Components/StatusBadge";
+import BimsLayout from "@/Layouts/BimsLayout";
 
-const DOCUMENT_TYPES = [
+const DOC_TYPES = [
     "Barangay Clearance",
     "Certificate of Indigency",
     "Certificate of Residency",
@@ -12,158 +10,219 @@ const DOCUMENT_TYPES = [
     "Certificate of Good Moral Character",
 ];
 
-const STATUS_COLORS = {
-    Pending: "yellow",
-    Processing: "blue",
-    Approved: "indigo",
-    Released: "green",
-    Rejected: "red",
+const STATUS_MAP = {
+    Pending: "badge-amber",
+    Processing: "badge-blue",
+    Approved: "badge-sky",
+    Released: "badge-green",
+    Rejected: "badge-red",
 };
 
-export default function Index({ requests, filters }) {
+export function DocumentsIndex({ requests, filters }) {
     const [search, setSearch] = useState(filters.search || "");
 
-    const handleSearch = (e) => {
-        e.preventDefault();
+    const go = (extra = {}) =>
         router.get(
             "/documents",
-            { ...filters, search },
+            { ...filters, ...extra },
             { preserveState: true },
         );
-    };
 
     return (
-        <AuthenticatedLayout header="Document Requests">
+        <BimsLayout>
             <Head title="Document Requests" />
+            <div className="bims-section-header">
+                <div className="bims-section-title">
+                    <h2>Document Requests</h2>
+                    <p>Manage barangay document certifications</p>
+                </div>
+                <Link
+                    href="/documents/create"
+                    className="bims-btn bims-btn-primary"
+                >
+                    📄 New Request
+                </Link>
+            </div>
 
-            {/* Filters */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-5">
-                <form onSubmit={handleSearch} className="flex flex-wrap gap-3">
+            <div
+                className="bims-card"
+                style={{ padding: "18px 24px", marginBottom: 16 }}
+            >
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                     <input
                         type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search by resident name..."
-                        className="input flex-1 min-w-[200px]"
+                        onKeyDown={(e) => e.key === "Enter" && go({ search })}
+                        placeholder="🔍  Search by resident name or request no..."
+                        className="bims-input"
+                        style={{ maxWidth: 320 }}
                     />
                     <select
-                        onChange={(e) =>
-                            router.get(
-                                "/documents",
-                                { ...filters, status: e.target.value },
-                                { preserveState: true },
-                            )
-                        }
+                        onChange={(e) => go({ status: e.target.value })}
                         defaultValue={filters.status || ""}
-                        className="input w-44"
+                        className="bims-input"
+                        style={{ maxWidth: 160 }}
                     >
                         <option value="">All Status</option>
-                        {Object.keys(STATUS_COLORS).map((s) => (
+                        {Object.keys(STATUS_MAP).map((s) => (
                             <option key={s}>{s}</option>
                         ))}
                     </select>
                     <select
-                        onChange={(e) =>
-                            router.get(
-                                "/documents",
-                                { ...filters, type: e.target.value },
-                                { preserveState: true },
-                            )
-                        }
+                        onChange={(e) => go({ type: e.target.value })}
                         defaultValue={filters.type || ""}
-                        className="input w-56"
+                        className="bims-input"
+                        style={{ maxWidth: 240 }}
                     >
                         <option value="">All Document Types</option>
-                        {DOCUMENT_TYPES.map((t) => (
+                        {DOC_TYPES.map((t) => (
                             <option key={t}>{t}</option>
                         ))}
                     </select>
-                    <button type="submit" className="btn-primary">
+                    <button
+                        onClick={() => go({ search })}
+                        className="bims-btn bims-btn-primary bims-btn-sm"
+                    >
                         Search
                     </button>
-                    <Link href="/documents/create" className="btn-success">
-                        + New Request
-                    </Link>
-                </form>
+                </div>
             </div>
 
-            {/* Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <table className="w-full text-sm">
-                    <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-                        <tr>
-                            <th className="px-5 py-3 text-left">Request No.</th>
-                            <th className="px-5 py-3 text-left">Resident</th>
-                            <th className="px-5 py-3 text-left">
-                                Document Type
-                            </th>
-                            <th className="px-5 py-3 text-left">Purpose</th>
-                            <th className="px-5 py-3 text-left">Status</th>
-                            <th className="px-5 py-3 text-left">Date Filed</th>
-                            <th className="px-5 py-3 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50">
-                        {requests.data.map((req) => (
-                            <tr
-                                key={req.id}
-                                className="hover:bg-gray-50 transition-colors"
-                            >
-                                <td className="px-5 py-3 font-mono text-xs font-semibold text-blue-700">
-                                    {req.request_number}
-                                </td>
-                                <td className="px-5 py-3 font-medium">
-                                    {req.resident?.last_name},{" "}
-                                    {req.resident?.first_name}
-                                </td>
-                                <td className="px-5 py-3 text-gray-600">
-                                    {req.document_type}
-                                </td>
-                                <td className="px-5 py-3 text-gray-500 max-w-[150px] truncate">
-                                    {req.purpose}
-                                </td>
-                                <td className="px-5 py-3">
-                                    <StatusBadge
-                                        status={req.status}
-                                        colors={STATUS_COLORS}
-                                    />
-                                </td>
-                                <td className="px-5 py-3 text-gray-500">
-                                    {new Date(
-                                        req.created_at,
-                                    ).toLocaleDateString("en-PH")}
-                                </td>
-                                <td className="px-5 py-3">
-                                    <div className="flex gap-2">
-                                        <Link
-                                            href={`/documents/${req.id}`}
-                                            className="text-blue-600 hover:underline text-xs"
-                                        >
-                                            Manage
-                                        </Link>
-                                        {(req.status === "Approved" ||
-                                            req.status === "Released") && (
-                                            <a
-                                                href={`/documents/${req.id}/print`}
-                                                target="_blank"
-                                                className="text-green-600 hover:underline text-xs"
-                                            >
-                                                Print
-                                            </a>
-                                        )}
-                                    </div>
-                                </td>
+            <div
+                className="bims-card"
+                style={{ padding: 0, overflow: "hidden" }}
+            >
+                <div style={{ overflowX: "auto" }}>
+                    <table className="bims-table">
+                        <thead>
+                            <tr>
+                                <th>Request No.</th>
+                                <th>Resident</th>
+                                <th>Document Type</th>
+                                <th>Purpose</th>
+                                <th>Fee</th>
+                                <th>Status</th>
+                                <th>Date Filed</th>
+                                <th>Actions</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {requests.data.length === 0 && (
-                    <div className="text-center py-16 text-gray-400">
-                        No document requests found.
+                        </thead>
+                        <tbody>
+                            {requests.data.map((req) => (
+                                <tr key={req.id}>
+                                    <td
+                                        style={{
+                                            fontFamily: "monospace",
+                                            fontWeight: 700,
+                                            color: "#2e7fc1",
+                                        }}
+                                    >
+                                        {req.request_number}
+                                    </td>
+                                    <td style={{ fontWeight: 700 }}>
+                                        {req.resident?.last_name},{" "}
+                                        {req.resident?.first_name}
+                                    </td>
+                                    <td style={{ color: "#4a5e74" }}>
+                                        {req.document_type}
+                                    </td>
+                                    <td
+                                        style={{
+                                            color: "#4a5e74",
+                                            maxWidth: 140,
+                                            overflow: "hidden",
+                                            textOverflow: "ellipsis",
+                                            whiteSpace: "nowrap",
+                                        }}
+                                    >
+                                        {req.purpose}
+                                    </td>
+                                    <td style={{ color: "#4a5e74" }}>
+                                        {req.fee > 0
+                                            ? `₱${parseFloat(req.fee).toFixed(2)}`
+                                            : "Free"}
+                                    </td>
+                                    <td>
+                                        <span
+                                            className={`bims-badge ${STATUS_MAP[req.status] || "badge-gray"}`}
+                                        >
+                                            {req.status}
+                                        </span>
+                                    </td>
+                                    <td style={{ color: "#4a5e74" }}>
+                                        {new Date(
+                                            req.created_at,
+                                        ).toLocaleDateString("en-PH")}
+                                    </td>
+                                    <td>
+                                        <div
+                                            style={{ display: "flex", gap: 8 }}
+                                        >
+                                            <Link
+                                                href={`/documents/${req.id}`}
+                                                style={{
+                                                    color: "#2e7fc1",
+                                                    fontSize: ".8rem",
+                                                    fontWeight: 700,
+                                                    textDecoration: "none",
+                                                }}
+                                            >
+                                                Manage
+                                            </Link>
+                                            {(req.status === "Approved" ||
+                                                req.status === "Released") && (
+                                                <a
+                                                    href={`/documents/${req.id}/print`}
+                                                    target="_blank"
+                                                    style={{
+                                                        color: "#1a7a4a",
+                                                        fontSize: ".8rem",
+                                                        fontWeight: 700,
+                                                        textDecoration: "none",
+                                                    }}
+                                                >
+                                                    Print
+                                                </a>
+                                            )}
+                                        </div>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {requests.data.length === 0 && (
+                        <div className="bims-empty">
+                            <div className="bims-empty-icon">📄</div>
+                            <p>No document requests found.</p>
+                        </div>
+                    )}
+                </div>
+                {requests.links && requests.links.length > 3 && (
+                    <div className="bims-pagination">
+                        <span style={{ fontSize: ".8rem", color: "#8ca0b3" }}>
+                            Showing {requests.from}–{requests.to} of{" "}
+                            {requests.total}
+                        </span>
+                        <div style={{ display: "flex", gap: 4 }}>
+                            {requests.links.map((link, i) => (
+                                <button
+                                    key={i}
+                                    disabled={!link.url}
+                                    onClick={() =>
+                                        link.url && router.get(link.url)
+                                    }
+                                    className={`bims-page-btn ${link.active ? "active" : ""}`}
+                                    dangerouslySetInnerHTML={{
+                                        __html: link.label,
+                                    }}
+                                />
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
-            <Pagination links={requests.links} />
-        </AuthenticatedLayout>
+        </BimsLayout>
     );
 }
+
+export default DocumentsIndex;

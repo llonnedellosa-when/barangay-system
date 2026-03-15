@@ -2,32 +2,78 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap');
+
+:root {
+  --navy:   #0d2137;
+  --blue:   #1a4a7a;
+  --sky:    #2e7fc1;
+  --gold:   #c8962a;
+  --amber:  #f0b429;
+  --cream:  #fdf8f0;
+  --white:  #ffffff;
+  --slate:  #4a5e74;
+  --muted:  #8ca0b3;
+  --border: #d4e1ec;
+  --danger: #c0392b;
+  --success:#1a7a4a;
+  --tag-bg: #e8f2fc;
+  --shadow: 0 4px 24px rgba(13,33,55,.10);
+  --radius: 10px;
+}
+
 @layer components {
-  .input {
-    @apply w-full border border-gray-300 rounded-lg px-3 py-2 text-sm
-           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent
-           transition-colors;
+  .bims-input {
+    @apply w-full border border-[#d4e1ec] rounded-lg px-3 py-2.5 text-sm
+           bg-[#fafdff] text-[#0d2137]
+           focus:outline-none focus:ring-2 focus:ring-[#2e7fc1] focus:border-transparent
+           transition-all;
   }
-  .label {
-    @apply block text-sm font-medium text-gray-700 mb-1;
+  .bims-label {
+    @apply block text-xs font-bold text-[#4a5e74] uppercase tracking-wide mb-1;
   }
-  .error {
+  .bims-error {
     @apply text-red-500 text-xs mt-1;
   }
-  .btn-primary {
-    @apply bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700
-           transition-colors text-sm font-medium disabled:opacity-50;
+  .bims-btn-primary {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm
+           bg-[#2e7fc1] text-white shadow-md hover:bg-[#1a4a7a]
+           transition-all active:scale-95 disabled:opacity-50;
   }
-  .btn-success {
-    @apply bg-green-600 text-white px-5 py-2 rounded-lg hover:bg-green-700
-           transition-colors text-sm font-medium;
+  .bims-btn-gold {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm
+           bg-[#c8962a] text-white shadow-md hover:bg-[#b5841f]
+           transition-all active:scale-95;
   }
-  .btn-danger {
-    @apply bg-red-600 text-white px-5 py-2 rounded-lg hover:bg-red-700
-           transition-colors text-sm font-medium;
+  .bims-btn-danger {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm
+           bg-[#c0392b] text-white shadow-md hover:bg-[#a93226]
+           transition-all active:scale-95;
   }
-  .btn-secondary {
-    @apply border border-gray-300 text-gray-700 px-5 py-2 rounded-lg hover:bg-gray-50
-           transition-colors text-sm font-medium;
+  .bims-btn-outline {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 rounded-lg font-bold text-sm
+           bg-transparent text-[#2e7fc1] border-2 border-[#2e7fc1]
+           hover:bg-[#e8f2fc] transition-all active:scale-95;
   }
+  .bims-btn-sm {
+    @apply px-3 py-1.5 text-xs;
+  }
+  .bims-card {
+    @apply bg-white rounded-[10px] shadow-md p-7 mb-6;
+  }
+  .bims-card-title {
+    @apply flex items-center gap-2 font-bold text-[#0d2137] text-lg
+           border-b-2 border-[#d4e1ec] pb-3 mb-5;
+    font-family: 'Playfair Display', serif;
+  }
+  .bims-badge {
+    @apply inline-block px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wide;
+  }
+  .badge-blue   { @apply bg-[#dbeeff] text-[#1a4a7a]; }
+  .badge-green  { @apply bg-[#d4f4e2] text-[#1a7a4a]; }
+  .badge-amber  { @apply bg-[#fef3cd] text-[#7a5a00]; }
+  .badge-red    { @apply bg-[#fde8e8] text-[#c0392b]; }
+  .badge-gray   { @apply bg-[#e8ecf0] text-[#4a5e74]; }
+  .badge-sky    { @apply bg-[#e0f0ff] text-[#2e7fc1]; }
+  .badge-indigo { @apply bg-[#e8e8ff] text-[#3a3ab0]; }
 }

@@ -1,10 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\DocumentRequest;
 use App\Models\Resident;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -37,8 +37,8 @@ class DocumentRequestController extends Controller
             ->orderBy('last_name')
             ->get()
             ->map(fn($r) => [
-                'id'    => $r->id,
-                'name'  => $r->full_name,
+                'id'      => $r->id,
+                'name'    => $r->full_name,
                 'address' => $r->address,
             ]);
 
@@ -69,16 +69,15 @@ class DocumentRequestController extends Controller
             'remarks' => 'nullable|string',
         ]);
 
-        $document->update([
-            ...$validated,
-            'processed_by' => auth()->id(),
+        // ✅ array_merge instead of spread operator
+        $document->update(array_merge($validated, [
+            'processed_by' => Auth::id(),
             'released_at'  => $validated['status'] === 'Released' ? now() : null,
-        ]);
+        ]));
 
         return back()->with('success', 'Status updated!');
     }
 
-    // Generate PDF Certificate
     public function print(DocumentRequest $document)
     {
         $document->load('resident');
@@ -91,10 +90,4 @@ class DocumentRequestController extends Controller
 
         return $pdf->stream("{$document->request_number}.pdf");
     }
-    public function __construct() {
-        $this->middleware('can:view documents')->only(['index', 'show']);
-        $this->middleware('can:create documents')->only(['create', 'store']);
-        $this->middleware('can:process documents')->only('updateStatus');
-        $this->middleware('can:print documents')->only('print');
-    }   
 }

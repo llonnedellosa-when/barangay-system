@@ -1,130 +1,177 @@
 import { Head, Link, router } from "@inertiajs/react";
 import { useState } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import Pagination from "@/Components/Pagination";
-import StatusBadge from "@/Components/StatusBadge";
+import BimsLayout from "@/Layouts/BimsLayout";
 
-const STATUS_COLORS = {
-    Filed: "blue",
-    "Under Investigation": "yellow",
-    "For Mediation": "orange",
-    Settled: "green",
-    Dismissed: "gray",
-    Escalated: "red",
+const STATUS_MAP = {
+    Filed: "badge-blue",
+    "Under Investigation": "badge-amber",
+    "For Mediation": "badge-sky",
+    Settled: "badge-green",
+    Dismissed: "badge-gray",
+    Escalated: "badge-red",
 };
 
-export default function Index({ blotters, filters }) {
+export default function BlotterIndex({ blotters, filters }) {
     const [search, setSearch] = useState(filters.search || "");
 
-    const handleSearch = (e) => {
-        e.preventDefault();
-        router.get("/blotter", { ...filters, search }, { preserveState: true });
-    };
+    const go = (extra = {}) =>
+        router.get(
+            "/blotter",
+            { ...filters, ...extra },
+            { preserveState: true },
+        );
 
     return (
-        <AuthenticatedLayout header="Blotter Reports">
-            <Head title="Blotter" />
+        <BimsLayout>
+            <Head title="Blotter Reports" />
+            <div className="bims-section-header">
+                <div className="bims-section-title">
+                    <h2>Blotter Reports</h2>
+                    <p>Official incident and complaint records</p>
+                </div>
+                <Link
+                    href="/blotter/create"
+                    className="bims-btn bims-btn-danger"
+                >
+                    🚨 File Blotter
+                </Link>
+            </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-5">
-                <form onSubmit={handleSearch} className="flex flex-wrap gap-3">
+            <div
+                className="bims-card"
+                style={{ padding: "18px 24px", marginBottom: 16 }}
+            >
+                <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                     <input
                         type="text"
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        placeholder="Search by case no., respondent, complainant..."
-                        className="input flex-1 min-w-[250px]"
+                        onKeyDown={(e) => e.key === "Enter" && go({ search })}
+                        placeholder="🔍  Search by case no., complainant, respondent..."
+                        className="bims-input"
+                        style={{ maxWidth: 360 }}
                     />
                     <select
-                        onChange={(e) =>
-                            router.get(
-                                "/blotter",
-                                { ...filters, status: e.target.value },
-                                { preserveState: true },
-                            )
-                        }
+                        onChange={(e) => go({ status: e.target.value })}
                         defaultValue={filters.status || ""}
-                        className="input w-52"
+                        className="bims-input"
+                        style={{ maxWidth: 200 }}
                     >
                         <option value="">All Status</option>
-                        {Object.keys(STATUS_COLORS).map((s) => (
+                        {Object.keys(STATUS_MAP).map((s) => (
                             <option key={s}>{s}</option>
                         ))}
                     </select>
-                    <button type="submit" className="btn-primary">
+                    <button
+                        onClick={() => go({ search })}
+                        className="bims-btn bims-btn-primary bims-btn-sm"
+                    >
                         Search
                     </button>
-                    <Link href="/blotter/create" className="btn-danger">
-                        + File Blotter
-                    </Link>
-                </form>
+                </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <table className="w-full text-sm">
-                    <thead className="bg-gray-50 text-gray-500 text-xs uppercase">
-                        <tr>
-                            <th className="px-5 py-3 text-left">Case No.</th>
-                            <th className="px-5 py-3 text-left">Complainant</th>
-                            <th className="px-5 py-3 text-left">Respondent</th>
-                            <th className="px-5 py-3 text-left">
-                                Incident Type
-                            </th>
-                            <th className="px-5 py-3 text-left">Date</th>
-                            <th className="px-5 py-3 text-left">Status</th>
-                            <th className="px-5 py-3 text-left">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-50">
-                        {blotters.data.map((blotter) => (
-                            <tr
-                                key={blotter.id}
-                                className="hover:bg-gray-50 transition-colors"
-                            >
-                                <td className="px-5 py-3 font-mono text-xs font-bold text-red-700">
-                                    {blotter.case_number}
-                                </td>
-                                <td className="px-5 py-3 font-medium">
-                                    {blotter.complainant?.last_name},{" "}
-                                    {blotter.complainant?.first_name}
-                                </td>
-                                <td className="px-5 py-3 text-gray-600">
-                                    {blotter.respondent_name}
-                                </td>
-                                <td className="px-5 py-3">
-                                    <span className="bg-red-50 text-red-700 text-xs px-2 py-0.5 rounded-full">
-                                        {blotter.incident_type}
-                                    </span>
-                                </td>
-                                <td className="px-5 py-3 text-gray-500">
-                                    {new Date(
-                                        blotter.incident_date,
-                                    ).toLocaleDateString("en-PH")}
-                                </td>
-                                <td className="px-5 py-3">
-                                    <StatusBadge
-                                        status={blotter.status}
-                                        colors={STATUS_COLORS}
-                                    />
-                                </td>
-                                <td className="px-5 py-3">
-                                    <Link
-                                        href={`/blotter/${blotter.id}`}
-                                        className="text-blue-600 hover:underline text-xs"
-                                    >
-                                        View Case
-                                    </Link>
-                                </td>
+            <div
+                className="bims-card"
+                style={{ padding: 0, overflow: "hidden" }}
+            >
+                <div style={{ overflowX: "auto" }}>
+                    <table className="bims-table">
+                        <thead>
+                            <tr>
+                                <th>Case No.</th>
+                                <th>Complainant</th>
+                                <th>Respondent</th>
+                                <th>Incident Type</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
-                {blotters.data.length === 0 && (
-                    <div className="text-center py-16 text-gray-400">
-                        No blotter records found.
+                        </thead>
+                        <tbody>
+                            {blotters.data.map((b) => (
+                                <tr key={b.id}>
+                                    <td
+                                        style={{
+                                            fontFamily: "monospace",
+                                            fontWeight: 700,
+                                            color: "#c0392b",
+                                        }}
+                                    >
+                                        {b.case_number}
+                                    </td>
+                                    <td style={{ fontWeight: 700 }}>
+                                        {b.complainant?.last_name},{" "}
+                                        {b.complainant?.first_name}
+                                    </td>
+                                    <td style={{ color: "#4a5e74" }}>
+                                        {b.respondent_name}
+                                    </td>
+                                    <td>
+                                        <span className="bims-badge badge-red">
+                                            {b.incident_type}
+                                        </span>
+                                    </td>
+                                    <td style={{ color: "#4a5e74" }}>
+                                        {new Date(
+                                            b.incident_date,
+                                        ).toLocaleDateString("en-PH")}
+                                    </td>
+                                    <td>
+                                        <span
+                                            className={`bims-badge ${STATUS_MAP[b.status] || "badge-gray"}`}
+                                        >
+                                            {b.status}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <Link
+                                            href={`/blotter/${b.id}`}
+                                            style={{
+                                                color: "#2e7fc1",
+                                                fontSize: ".8rem",
+                                                fontWeight: 700,
+                                                textDecoration: "none",
+                                            }}
+                                        >
+                                            View Case
+                                        </Link>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                    {blotters.data.length === 0 && (
+                        <div className="bims-empty">
+                            <div className="bims-empty-icon">⚖️</div>
+                            <p>No blotter records found.</p>
+                        </div>
+                    )}
+                </div>
+                {blotters.links && blotters.links.length > 3 && (
+                    <div className="bims-pagination">
+                        <span style={{ fontSize: ".8rem", color: "#8ca0b3" }}>
+                            Showing {blotters.from}–{blotters.to} of{" "}
+                            {blotters.total}
+                        </span>
+                        <div style={{ display: "flex", gap: 4 }}>
+                            {blotters.links.map((link, i) => (
+                                <button
+                                    key={i}
+                                    disabled={!link.url}
+                                    onClick={() =>
+                                        link.url && router.get(link.url)
+                                    }
+                                    className={`bims-page-btn ${link.active ? "active" : ""}`}
+                                    dangerouslySetInnerHTML={{
+                                        __html: link.label,
+                                    }}
+                                />
+                            ))}
+                        </div>
                     </div>
                 )}
             </div>
-            <Pagination links={blotters.links} />
-        </AuthenticatedLayout>
+        </BimsLayout>
     );
 }

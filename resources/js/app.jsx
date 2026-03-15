@@ -28,23 +28,9 @@ createInertiaApp({
 export default function SomeComponent() {
     const { auth } = usePage().props;
 
-    // Helper functions
-    const can = (permission) => auth.permissions.includes(permission);
-    const hasRole = (role) => auth.roles.includes(role);
-
     return (
         <div>
-            {can("create residents") && (
-                <Link href="/residents/create" className="btn-primary">
-                    + Add Resident
-                </Link>
-            )}
-            {can("create blotter") && (
-                <Link href="/blotter/create" className="btn-danger">
-                    + File Blotter
-                </Link>
-            )}
-            {hasRole("Admin") && <Link href="/admin/users">Manage Users</Link>}
+            {auth.user && <Link href="/residents/create">+ Add Resident</Link>}
         </div>
     );
 }

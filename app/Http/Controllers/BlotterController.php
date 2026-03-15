@@ -1,22 +1,14 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Blotter;
 use App\Models\Resident;
 use Illuminate\Http\Request;
-use Inertia\Inertia;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Inertia\Inertia;
+
 class BlotterController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:view blotter')->only(['index', 'show']);
-        $this->middleware('can:create blotter')->only(['create', 'store']);
-        $this->middleware('can:manage blotter')->only('updateStatus');
-    }
-
     public function index(Request $request)
     {
         $blotters = Blotter::with('complainant')
@@ -45,8 +37,8 @@ class BlotterController extends Controller
             ->orderBy('last_name')
             ->get()
             ->map(fn($r) => [
-                'id' => $r->id,
-                'name' => $r->full_name
+                'id'   => $r->id,
+                'name' => $r->full_name,
             ]);
 
         return Inertia::render('Blotter/Create', [
@@ -57,16 +49,17 @@ class BlotterController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'complainant_id'      => 'required|exists:residents,id',
-            'respondent_name'     => 'required|string|max:200',
-            'respondent_address'  => 'nullable|string|max:255',
-            'incident_type'       => 'required|string',
-            'incident_date'       => 'required|date',
-            'incident_location'   => 'required|string|max:255',
-            'narrative'           => 'required|string',
+            'complainant_id'     => 'required|exists:residents,id',
+            'respondent_name'    => 'required|string|max:200',
+            'respondent_address' => 'nullable|string|max:255',
+            'incident_type'      => 'required|string',
+            'incident_date'      => 'required|date',
+            'incident_location'  => 'required|string|max:255',
+            'narrative'          => 'required|string',
         ]);
 
-        $validated['handled_by'] = auth()->user()->id;
+        // ✅ Semicolon — not a comma
+        $validated['handled_by'] = Auth:: id();
 
         Blotter::create($validated);
 

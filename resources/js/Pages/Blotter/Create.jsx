@@ -1,6 +1,6 @@
-import { Head, useForm } from "@inertiajs/react";
+import { Head, Link, useForm } from "@inertiajs/react";
 import { useState } from "react";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import BimsLayout from "@/Layouts/BimsLayout";
 
 const INCIDENT_TYPES = [
     "Physical Assault",
@@ -13,7 +13,7 @@ const INCIDENT_TYPES = [
     "Others",
 ];
 
-export default function Create({ residents }) {
+export default function BlotterCreate({ residents }) {
     const [residentSearch, setResidentSearch] = useState("");
     const [showDropdown, setShowDropdown] = useState(false);
 
@@ -27,7 +27,7 @@ export default function Create({ residents }) {
         narrative: "",
     });
 
-    const filtered = residents
+    const filtered = (residents || [])
         .filter((r) =>
             r.name.toLowerCase().includes(residentSearch.toLowerCase()),
         )
@@ -40,222 +40,263 @@ export default function Create({ residents }) {
     };
 
     return (
-        <AuthenticatedLayout header="File Blotter Report">
+        <BimsLayout>
             <Head title="File Blotter" />
-            <div className="max-w-3xl mx-auto">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
-                        <p className="text-red-700 text-sm font-semibold">
-                            ⚠️ Official Record
-                        </p>
-                        <p className="text-red-600 text-xs mt-1">
-                            This blotter report is an official legal document.
-                            All information must be accurate and truthful.
-                        </p>
-                    </div>
-
-                    <form
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            post("/blotter");
-                        }}
-                        className="space-y-6"
-                    >
-                        {/* Complainant */}
-                        <div>
-                            <h3 className="font-semibold text-gray-700 border-b border-gray-100 pb-2 mb-4">
-                                Complainant
-                            </h3>
-                            <div className="relative">
-                                <label className="label">
-                                    Resident Complainant{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    value={residentSearch}
-                                    onChange={(e) => {
-                                        setResidentSearch(e.target.value);
-                                        setShowDropdown(true);
-                                    }}
-                                    onFocus={() => setShowDropdown(true)}
-                                    placeholder="Search resident name..."
-                                    className="input"
-                                    autoComplete="off"
-                                />
-                                {errors.complainant_id && (
-                                    <p className="error">
-                                        {errors.complainant_id}
-                                    </p>
-                                )}
-                                {showDropdown && residentSearch && (
-                                    <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-52 overflow-y-auto">
-                                        {filtered.map((r) => (
-                                            <button
-                                                key={r.id}
-                                                type="button"
-                                                onClick={() =>
-                                                    selectResident(r)
-                                                }
-                                                className="w-full px-4 py-2.5 text-left hover:bg-blue-50 text-sm border-b border-gray-50"
-                                            >
-                                                {r.name}
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Respondent */}
-                        <div>
-                            <h3 className="font-semibold text-gray-700 border-b border-gray-100 pb-2 mb-4">
-                                Respondent
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="label">
-                                        Full Name{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        value={data.respondent_name}
-                                        onChange={(e) =>
-                                            setData(
-                                                "respondent_name",
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="input"
-                                        required
-                                        placeholder="Person being complained about"
-                                    />
-                                    {errors.respondent_name && (
-                                        <p className="error">
-                                            {errors.respondent_name}
-                                        </p>
-                                    )}
-                                </div>
-                                <div>
-                                    <label className="label">Address</label>
-                                    <input
-                                        value={data.respondent_address}
-                                        onChange={(e) =>
-                                            setData(
-                                                "respondent_address",
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="input"
-                                        placeholder="Known address"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Incident */}
-                        <div>
-                            <h3 className="font-semibold text-gray-700 border-b border-gray-100 pb-2 mb-4">
-                                Incident Details
-                            </h3>
-                            <div className="grid grid-cols-2 gap-4 mb-4">
-                                <div>
-                                    <label className="label">
-                                        Type of Incident{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <select
-                                        value={data.incident_type}
-                                        onChange={(e) =>
-                                            setData(
-                                                "incident_type",
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="input"
-                                        required
-                                    >
-                                        <option value="">Select type...</option>
-                                        {INCIDENT_TYPES.map((t) => (
-                                            <option key={t}>{t}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className="label">
-                                        Date & Time{" "}
-                                        <span className="text-red-500">*</span>
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        value={data.incident_date}
-                                        onChange={(e) =>
-                                            setData(
-                                                "incident_date",
-                                                e.target.value,
-                                            )
-                                        }
-                                        className="input"
-                                        required
-                                    />
-                                </div>
-                            </div>
-                            <div className="mb-4">
-                                <label className="label">
-                                    Location{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    value={data.incident_location}
-                                    onChange={(e) =>
-                                        setData(
-                                            "incident_location",
-                                            e.target.value,
-                                        )
-                                    }
-                                    className="input"
-                                    required
-                                    placeholder="e.g. Purok 3, near the waiting shed"
-                                />
-                            </div>
-                            <div>
-                                <label className="label">
-                                    Full Narrative{" "}
-                                    <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    value={data.narrative}
-                                    onChange={(e) =>
-                                        setData("narrative", e.target.value)
-                                    }
-                                    className="input"
-                                    rows={6}
-                                    required
-                                    placeholder="Provide a detailed and accurate account of what happened — time, place, persons involved, and sequence of events..."
-                                />
-                                {errors.narrative && (
-                                    <p className="error">{errors.narrative}</p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="flex gap-3 pt-2">
-                            <button
-                                type="submit"
-                                disabled={processing}
-                                className="bg-red-600 text-white px-8 py-2.5 rounded-lg hover:bg-red-700 disabled:opacity-50 font-medium text-sm"
-                            >
-                                {processing
-                                    ? "Filing..."
-                                    : "File Blotter Report"}
-                            </button>
-                            <a href="/blotter" className="btn-secondary">
-                                Cancel
-                            </a>
-                        </div>
-                    </form>
+            <div className="bims-section-header">
+                <div className="bims-section-title">
+                    <h2>File Blotter Report</h2>
+                    <p>Official incident and complaint record</p>
                 </div>
+                <Link href="/blotter" className="bims-btn bims-btn-outline">
+                    ← Back
+                </Link>
             </div>
-        </AuthenticatedLayout>
+
+            {/* Warning */}
+            <div
+                style={{
+                    background: "#fde8e8",
+                    border: "1px solid #c0392b",
+                    borderRadius: 8,
+                    padding: "14px 18px",
+                    marginBottom: 20,
+                }}
+            >
+                <p
+                    style={{
+                        color: "#c0392b",
+                        fontWeight: 700,
+                        fontSize: ".88rem",
+                        marginBottom: 2,
+                    }}
+                >
+                    ⚠️ Official Legal Document
+                </p>
+                <p style={{ color: "#c0392b", fontSize: ".82rem" }}>
+                    This blotter report is an official record. All information
+                    must be accurate and truthful.
+                </p>
+            </div>
+
+            <form
+                onSubmit={(e) => {
+                    e.preventDefault();
+                    post("/blotter");
+                }}
+            >
+                {/* Complainant */}
+                <div className="bims-card">
+                    <div className="bims-card-title">
+                        <span>👤</span> Complainant
+                    </div>
+                    <div style={{ position: "relative", maxWidth: 500 }}>
+                        <label className="bims-label">
+                            Resident Complainant *
+                        </label>
+                        <input
+                            type="text"
+                            value={residentSearch}
+                            onChange={(e) => {
+                                setResidentSearch(e.target.value);
+                                setShowDropdown(true);
+                            }}
+                            onFocus={() => setShowDropdown(true)}
+                            placeholder="Search resident name..."
+                            className="bims-input"
+                            autoComplete="off"
+                        />
+                        {errors.complainant_id && (
+                            <p className="bims-error">
+                                {errors.complainant_id}
+                            </p>
+                        )}
+                        {showDropdown && residentSearch && (
+                            <div
+                                style={{
+                                    position: "absolute",
+                                    zIndex: 10,
+                                    width: "100%",
+                                    marginTop: 4,
+                                    background: "#fff",
+                                    border: "1.5px solid #d4e1ec",
+                                    borderRadius: 8,
+                                    boxShadow: "0 4px 24px rgba(13,33,55,.12)",
+                                    maxHeight: 220,
+                                    overflowY: "auto",
+                                }}
+                            >
+                                {filtered.map((r) => (
+                                    <button
+                                        key={r.id}
+                                        type="button"
+                                        onClick={() => selectResident(r)}
+                                        style={{
+                                            width: "100%",
+                                            padding: "10px 16px",
+                                            textAlign: "left",
+                                            background: "none",
+                                            border: "none",
+                                            borderBottom: "1px solid #f0f4f8",
+                                            cursor: "pointer",
+                                            fontSize: ".88rem",
+                                            fontFamily:
+                                                "Source Sans 3, sans-serif",
+                                        }}
+                                        onMouseEnter={(e) =>
+                                            (e.currentTarget.style.background =
+                                                "#f0f6fb")
+                                        }
+                                        onMouseLeave={(e) =>
+                                            (e.currentTarget.style.background =
+                                                "none")
+                                        }
+                                    >
+                                        {r.name}
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Respondent */}
+                <div className="bims-card">
+                    <div className="bims-card-title">
+                        <span>🎯</span> Respondent
+                    </div>
+                    <div className="form-grid">
+                        <div>
+                            <label className="bims-label">Full Name *</label>
+                            <input
+                                value={data.respondent_name}
+                                onChange={(e) =>
+                                    setData("respondent_name", e.target.value)
+                                }
+                                className="bims-input"
+                                required
+                                placeholder="Person being complained about"
+                            />
+                            {errors.respondent_name && (
+                                <p className="bims-error">
+                                    {errors.respondent_name}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <label className="bims-label">Address</label>
+                            <input
+                                value={data.respondent_address}
+                                onChange={(e) =>
+                                    setData(
+                                        "respondent_address",
+                                        e.target.value,
+                                    )
+                                }
+                                className="bims-input"
+                                placeholder="Known address"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Incident Details */}
+                <div className="bims-card">
+                    <div className="bims-card-title">
+                        <span>📋</span> Incident Details
+                    </div>
+                    <div className="form-grid">
+                        <div>
+                            <label className="bims-label">
+                                Type of Incident *
+                            </label>
+                            <select
+                                value={data.incident_type}
+                                onChange={(e) =>
+                                    setData("incident_type", e.target.value)
+                                }
+                                className="bims-input"
+                                required
+                            >
+                                <option value="">Select type...</option>
+                                {INCIDENT_TYPES.map((t) => (
+                                    <option key={t}>{t}</option>
+                                ))}
+                            </select>
+                            {errors.incident_type && (
+                                <p className="bims-error">
+                                    {errors.incident_type}
+                                </p>
+                            )}
+                        </div>
+                        <div>
+                            <label className="bims-label">Date & Time *</label>
+                            <input
+                                type="datetime-local"
+                                value={data.incident_date}
+                                onChange={(e) =>
+                                    setData("incident_date", e.target.value)
+                                }
+                                className="bims-input"
+                                required
+                            />
+                            {errors.incident_date && (
+                                <p className="bims-error">
+                                    {errors.incident_date}
+                                </p>
+                            )}
+                        </div>
+                        <div className="full">
+                            <label className="bims-label">Location *</label>
+                            <input
+                                value={data.incident_location}
+                                onChange={(e) =>
+                                    setData("incident_location", e.target.value)
+                                }
+                                className="bims-input"
+                                required
+                                placeholder="e.g. Purok 3, near the waiting shed"
+                            />
+                            {errors.incident_location && (
+                                <p className="bims-error">
+                                    {errors.incident_location}
+                                </p>
+                            )}
+                        </div>
+                        <div className="full">
+                            <label className="bims-label">
+                                Full Narrative *
+                            </label>
+                            <textarea
+                                value={data.narrative}
+                                onChange={(e) =>
+                                    setData("narrative", e.target.value)
+                                }
+                                className="bims-input"
+                                rows={6}
+                                required
+                                style={{ resize: "vertical", minHeight: 120 }}
+                                placeholder="Provide a detailed and accurate account of what happened — time, place, persons involved, and sequence of events..."
+                            />
+                            {errors.narrative && (
+                                <p className="bims-error">{errors.narrative}</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div style={{ display: "flex", gap: 12 }}>
+                    <button
+                        type="submit"
+                        disabled={processing}
+                        className="bims-btn bims-btn-danger"
+                    >
+                        {processing ? "⏳ Filing..." : "🚨 File Blotter Report"}
+                    </button>
+                    <Link href="/blotter" className="bims-btn bims-btn-outline">
+                        Cancel
+                    </Link>
+                </div>
+            </form>
+        </BimsLayout>
     );
 }
