@@ -1,5 +1,6 @@
 import { Head, Link, router } from "@inertiajs/react";
 import { useEffect, useRef, useState } from "react";
+import "../../css/dashboard.css";
 
 export default function Dashboard({
     stats = {},
@@ -88,7 +89,7 @@ export default function Dashboard({
 
     return (
         <>
-            {/* ── Google Fonts ──────────────────────────────────── */}
+            {/* Google Fonts  */}
             <Head title="Dashboard">
                 <link
                     href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Sans+3:wght@300;400;600;700&display=swap"
@@ -96,340 +97,8 @@ export default function Dashboard({
                 />
             </Head>
 
-            <style>{`
-        /* ── CSS Variables ─────────────────────────────── */
-        :root {
-          --navy:   #0d2137;
-          --blue:   #1a4a7a;
-          --sky:    #2e7fc1;
-          --gold:   #c8962a;
-          --amber:  #f0b429;
-          --cream:  #fdf8f0;
-          --white:  #ffffff;
-          --slate:  #4a5e74;
-          --muted:  #8ca0b3;
-          --border: #d4e1ec;
-          --danger: #c0392b;
-          --success:#1a7a4a;
-          --tag-bg: #e8f2fc;
-          --shadow: 0 4px 24px rgba(13,33,55,.10);
-          --radius: 10px;
-        }
-        .bims-body {
-          font-family: 'Source Sans 3', sans-serif;
-          background: var(--cream);
-          color: var(--navy);
-          min-height: 100vh;
-        }
-        /* ── Header ─────────────────────────────────────── */
-        .bims-header {
-          background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
-          color: var(--white);
-          padding: 0 32px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          height: 72px;
-          box-shadow: 0 2px 20px rgba(13,33,55,.35);
-          position: sticky;
-          top: 0;
-          z-index: 100;
-        }
-        .bims-header-brand { display: flex; align-items: center; gap: 14px; }
-        .bims-seal {
-          width: 48px; height: 48px;
-          background: radial-gradient(circle, var(--amber) 0%, var(--gold) 100%);
-          border-radius: 50%;
-          display: flex; align-items: center; justify-content: center;
-          font-size: 22px;
-          box-shadow: 0 0 0 3px rgba(248,180,41,.3);
-          flex-shrink: 0;
-        }
-        .bims-header-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.15rem;
-          letter-spacing: .5px;
-          line-height: 1.2;
-        }
-        .bims-header-sub {
-          font-size: .72rem;
-          color: rgba(255,255,255,.6);
-          letter-spacing: 1.5px;
-          text-transform: uppercase;
-          margin: 0;
-        }
-        .bims-header-meta { text-align: right; font-size: .75rem; color: rgba(255,255,255,.65); }
-        .bims-header-meta strong { display: block; color: var(--amber); font-size: .85rem; }
-
-        /* ── Layout ──────────────────────────────────────── */
-        .bims-app {
-          display: grid;
-          grid-template-columns: 230px 1fr;
-          min-height: calc(100vh - 72px);
-        }
-
-        /* ── Sidebar ─────────────────────────────────────── */
-        .bims-nav {
-          background: var(--navy);
-          padding: 24px 0;
-          position: sticky;
-          top: 72px;
-          height: calc(100vh - 72px);
-          overflow-y: auto;
-        }
-        .bims-nav-label {
-          font-size: .65rem;
-          letter-spacing: 2px;
-          text-transform: uppercase;
-          color: rgba(255,255,255,.35);
-          padding: 18px 24px 6px;
-        }
-        .bims-nav-link {
-          display: flex;
-          align-items: center;
-          gap: 11px;
-          padding: 11px 24px;
-          color: rgba(255,255,255,.7);
-          text-decoration: none;
-          font-size: .88rem;
-          font-weight: 600;
-          transition: background .15s, color .15s;
-          border-left: 3px solid transparent;
-          cursor: pointer;
-          background: none;
-          border-right: none;
-          border-top: none;
-          border-bottom: none;
-          width: 100%;
-          text-align: left;
-          font-family: 'Source Sans 3', sans-serif;
-        }
-        .bims-nav-link:hover, .bims-nav-link.active {
-          background: rgba(255,255,255,.07);
-          color: var(--white);
-          border-left-color: var(--amber);
-        }
-        .bims-nav-icon { font-size: 1rem; width: 20px; text-align: center; }
-        .bims-nav-divider {
-          border: none;
-          border-top: 1px solid rgba(255,255,255,.08);
-          margin: 10px 20px;
-        }
-
-        /* ── Main ────────────────────────────────────────── */
-        .bims-main { padding: 32px 36px; overflow-y: auto; }
-
-        /* ── Section Header ──────────────────────────────── */
-        .bims-section-header {
-          display: flex;
-          align-items: flex-start;
-          justify-content: space-between;
-          margin-bottom: 28px;
-          flex-wrap: wrap;
-          gap: 12px;
-        }
-        .bims-section-title h2 {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.6rem;
-          color: var(--navy);
-          margin: 0;
-        }
-        .bims-section-title p { color: var(--muted); font-size: .85rem; margin-top: 3px; margin-bottom: 0; }
-
-        /* ── Stat Cards ──────────────────────────────────── */
-        .bims-stats-row {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-          gap: 16px;
-          margin-bottom: 28px;
-        }
-        .bims-stat-card {
-          background: var(--white);
-          border-radius: var(--radius);
-          padding: 20px 22px;
-          box-shadow: var(--shadow);
-          border-top: 4px solid var(--sky);
-          animation: bimsfadeUp .4s ease both;
-          cursor: default;
-        }
-        .bims-stat-card:nth-child(2) { border-top-color: var(--gold); }
-        .bims-stat-card:nth-child(3) { border-top-color: var(--success); }
-        .bims-stat-card:nth-child(4) { border-top-color: var(--danger); }
-        .bims-stat-label { font-size: .72rem; text-transform: uppercase; letter-spacing: 1.2px; color: var(--muted); margin-bottom: 6px; }
-        .bims-stat-num { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--navy); line-height: 1; }
-        .bims-stat-sub { font-size: .75rem; color: var(--muted); margin-top: 4px; }
-
-        /* ── Cards ───────────────────────────────────────── */
-        .bims-card {
-          background: var(--white);
-          border-radius: var(--radius);
-          box-shadow: var(--shadow);
-          padding: 28px 32px;
-          margin-bottom: 24px;
-          animation: bimsfadeUp .35s ease both;
-        }
-        .bims-card-title {
-          font-family: 'Playfair Display', serif;
-          font-size: 1.1rem;
-          color: var(--navy);
-          margin-bottom: 20px;
-          padding-bottom: 12px;
-          border-bottom: 2px solid var(--border);
-          display: flex;
-          align-items: center;
-          gap: 10px;
-        }
-        .bims-card-title span { font-size: 1.1rem; }
-
-        /* ── Charts ──────────────────────────────────────── */
-        .bims-chart-bars {
-          display: flex;
-          align-items: flex-end;
-          gap: 10px;
-          height: 130px;
-          padding: 0 8px;
-        }
-        .bims-bar-wrap { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
-        .bims-bar {
-          width: 100%;
-          border-radius: 5px 5px 0 0;
-          background: linear-gradient(180deg, var(--sky), var(--blue));
-          min-height: 10px;
-          transition: height .6s cubic-bezier(.4,0,.2,1), opacity .2s;
-        }
-        .bims-bar:hover { opacity: .8; }
-        .bims-bar-label { font-size: .68rem; color: var(--muted); text-align: center; }
-        .bims-bar-val { font-size: .72rem; font-weight: 700; color: var(--slate); }
-
-        /* ── Table ───────────────────────────────────────── */
-        .bims-table-wrap { overflow-x: auto; border-radius: var(--radius); }
-        .bims-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
-        .bims-table thead {
-          background: linear-gradient(90deg, var(--navy), var(--blue));
-          color: var(--white);
-        }
-        .bims-table thead th {
-          padding: 13px 16px;
-          text-align: left;
-          font-size: .72rem;
-          letter-spacing: 1.2px;
-          text-transform: uppercase;
-          font-weight: 700;
-          white-space: nowrap;
-        }
-        .bims-table tbody tr { border-bottom: 1px solid var(--border); transition: background .12s; }
-        .bims-table tbody tr:hover { background: #f0f6fb; }
-        .bims-table tbody td { padding: 11px 16px; vertical-align: middle; }
-        .bims-table tbody tr:last-child { border-bottom: none; }
-
-        /* ── Badges ──────────────────────────────────────── */
-        .bims-badge {
-          display: inline-block;
-          padding: 3px 10px;
-          border-radius: 20px;
-          font-size: .72rem;
-          font-weight: 700;
-          letter-spacing: .5px;
-          text-transform: uppercase;
-        }
-        .bims-badge-blue   { background: #dbeeff; color: var(--blue); }
-        .bims-badge-green  { background: #d4f4e2; color: var(--success); }
-        .bims-badge-amber  { background: #fef3cd; color: #7a5a00; }
-        .bims-badge-red    { background: #fde8e8; color: var(--danger); }
-        .bims-badge-gray   { background: #e8ecf0; color: var(--slate); }
-        .bims-badge-sky    { background: #e0f0ff; color: var(--sky); }
-
-        /* ── Buttons ─────────────────────────────────────── */
-        .bims-btn {
-          display: inline-flex; align-items: center; gap: 8px;
-          padding: 10px 22px; border-radius: 7px; border: none;
-          cursor: pointer; font-family: 'Source Sans 3', sans-serif;
-          font-size: .88rem; font-weight: 700; letter-spacing: .3px;
-          transition: transform .12s, box-shadow .12s, background .15s;
-          text-decoration: none;
-        }
-        .bims-btn:active { transform: scale(.97); }
-        .bims-btn-primary {
-          background: var(--sky); color: var(--white);
-          box-shadow: 0 3px 12px rgba(46,127,193,.35);
-        }
-        .bims-btn-primary:hover { background: var(--blue); color: var(--white); }
-        .bims-btn-gold {
-          background: var(--gold); color: var(--white);
-          box-shadow: 0 3px 12px rgba(200,150,42,.35);
-        }
-        .bims-btn-gold:hover { background: #b5841f; }
-        .bims-btn-danger { background: var(--danger); color: var(--white); }
-        .bims-btn-outline {
-          background: transparent; color: var(--sky);
-          border: 1.5px solid var(--sky);
-        }
-        .bims-btn-outline:hover { background: var(--tag-bg); }
-        .bims-btn-sm { padding: 6px 14px; font-size: .8rem; }
-
-        /* ── Housing summary bar ─────────────────────────── */
-        .bims-progress-row {
-          display: flex; justify-content: space-between;
-          align-items: center; padding: 10px 0;
-          border-bottom: 1px solid var(--border);
-          font-size: .85rem;
-        }
-        .bims-progress-row:last-child { border-bottom: none; }
-        .bims-progress-bar-wrap {
-          flex: 1; height: 8px;
-          background: var(--border);
-          border-radius: 6px;
-          overflow: hidden;
-          margin: 0 12px;
-        }
-        .bims-progress-bar {
-          height: 100%;
-          background: linear-gradient(90deg, var(--sky), var(--blue));
-          border-radius: 6px;
-          transition: width .6s cubic-bezier(.4,0,.2,1);
-        }
-
-        /* ── Special groups mini cards ───────────────────── */
-        .bims-mini-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-          gap: 12px;
-          margin-top: 4px;
-        }
-        .bims-mini-card {
-          background: var(--tag-bg);
-          border-radius: 8px;
-          padding: 14px 16px;
-          display: flex; flex-direction: column; gap: 4px;
-        }
-        .bims-mini-icon { font-size: 1.3rem; }
-        .bims-mini-num { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--navy); }
-        .bims-mini-label { font-size: .68rem; text-transform: uppercase; letter-spacing: 1px; color: var(--muted); }
-
-        /* ── Quick action pills ──────────────────────────── */
-        .bims-quick-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 0; }
-
-        /* ── Animations ──────────────────────────────────── */
-        @keyframes bimsfadeUp {
-          from { opacity: 0; transform: translateY(14px); }
-          to   { opacity: 1; transform: translateY(0);    }
-        }
-
-        /* ── Responsive ──────────────────────────────────── */
-        @media (max-width: 768px) {
-          .bims-app { grid-template-columns: 1fr; }
-          .bims-nav { position: static; height: auto; display: flex; flex-wrap: wrap; padding: 8px; gap: 2px; }
-          .bims-nav-link { padding: 8px 12px; font-size: .78rem; border-left: none; border-bottom: 2px solid transparent; }
-          .bims-nav-link.active { border-bottom-color: var(--amber); border-left: none; }
-          .bims-nav-label, .bims-nav-divider { display: none; }
-          .bims-main { padding: 20px 16px; }
-          .bims-card { padding: 18px 16px; }
-          .bims-charts-row { grid-template-columns: 1fr !important; }
-        }
-      `}</style>
-
             <div className="bims-body">
-                {/* ══ HEADER ══════════════════════════════════════════ */}
+                {/*HEADER */}
                 <header className="bims-header">
                     <div className="bims-header-brand">
                         <div className="bims-seal">🏛️</div>
@@ -450,9 +119,9 @@ export default function Dashboard({
                     </div>
                 </header>
 
-                {/* ══ APP LAYOUT ══════════════════════════════════════ */}
+                {/* APP LAYOUT */}
                 <div className="bims-app">
-                    {/* ── SIDEBAR ──────────────────────────────────────── */}
+                    {/* SIDEBAR */}
                     <nav className="bims-nav">
                         <div className="bims-nav-label">Main Menu</div>
 
@@ -516,7 +185,7 @@ export default function Dashboard({
                         </Link>
                     </nav>
 
-                    {/* ── MAIN CONTENT ─────────────────────────────────── */}
+                    {/* MAIN CONTENT */}
                     <main className="bims-main">
                         {/* Section Header */}
                         <div className="bims-section-header">
@@ -535,7 +204,7 @@ export default function Dashboard({
                             </button>
                         </div>
 
-                        {/* ── TOP STAT CARDS ────────────────────────────── */}
+                        {/* TOP STAT CARDS */}
                         <div className="bims-stats-row">
                             <div className="bims-stat-card">
                                 <div className="bims-stat-label">
@@ -583,7 +252,7 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* ── CHARTS ROW ────────────────────────────────── */}
+                        {/* CHARTS ROW */}
                         <div
                             style={{
                                 display: "grid",
@@ -691,7 +360,7 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* ── SPECIAL GROUPS ────────────────────────────── */}
+                        {/* SPECIAL GROUPS */}
                         <div className="bims-card">
                             <div className="bims-card-title">
                                 <span>🏷️</span> Special Population Groups
@@ -757,7 +426,7 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* ── RECENT RESIDENTS TABLE ────────────────────── */}
+                        {/* RECENT RESIDENTS TABLE */}
                         <div className="bims-card">
                             <div
                                 className="bims-card-title"
@@ -865,7 +534,7 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* ── BOTTOM ROW: Documents + Blotter ───────────── */}
+                        {/* BOTTOM ROW: Documents + Blotter─ */}
                         <div
                             style={{
                                 display: "grid",
@@ -1044,7 +713,7 @@ export default function Dashboard({
                             </div>
                         </div>
 
-                        {/* ── QUICK ACTIONS ─────────────────────────────── */}
+                        {/* QUICK ACTIONS─ */}
                         <div className="bims-card" style={{ marginTop: 24 }}>
                             <div className="bims-card-title">
                                 <span>⚡</span> Quick Actions
@@ -1079,7 +748,7 @@ export default function Dashboard({
     );
 }
 
-/* ── Sub-components ─────────────────────────────────────────── */
+/* Sub-components─ */
 
 function StatusBadge({ status }) {
     const map = {

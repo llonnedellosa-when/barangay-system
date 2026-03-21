@@ -1,30 +1,24 @@
-<?php
-
 use App\Http\Controllers\ResidentController;
-use App\Http\Controllers\DocumentRequestController;
-use App\Http\Controllers\BlotterController;
+use App\Http\Controllers\DocumentController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
-
+ 
 Route::get('/', fn() => redirect('/dashboard'));
-
+ 
 Route::middleware(['auth', 'verified'])->group(function () {
-
+ 
     // Dashboard
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
-    // Residents
+ 
+    // Residents — full CRUD
     Route::resource('residents', ResidentController::class);
-
-    // Documents
-    Route::resource('documents', DocumentRequestController::class);
-    Route::patch('/documents/{document}/status', [DocumentRequestController::class, 'updateStatus'])->name('documents.status');
-    Route::get('/documents/{document}/print',    [DocumentRequestController::class, 'print'])->name('documents.print');
-
-    // Blotter
-    Route::resource('blotter', BlotterController::class);
-    Route::patch('/blotter/{blotter}/status', [BlotterController::class, 'updateStatus'])->name('blotter.status');
-
+ 
+    // Document Generator
+    Route::get('/documents',                  [DocumentController::class, 'index'])->name('documents.index');
+    Route::get('/documents/generate/{docType}',[DocumentController::class, 'generate'])->name('documents.generate');
+    Route::post('/documents/generate',        [DocumentController::class, 'store'])->name('documents.store');
+    Route::get('/documents/print/{document}', [DocumentController::class, 'print'])->name('documents.print');
+ 
 });
-
+ 
 require __DIR__.'/auth.php';
