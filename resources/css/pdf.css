@@ -1,0 +1,26 @@
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family: Arial, sans-serif; font-size: 10pt; color: #111; padding: 20px 30px; }
+  .report-header { text-align:center; margin-bottom:16px; border-bottom:3px solid #0d2137; padding-bottom:12px; }
+  .report-header .republic { font-size:9pt; color:#555; }
+  .report-header h1 { font-size:14pt; font-weight:bold; color:#0d2137; text-transform:uppercase; margin:6px 0 2px; letter-spacing:1px; }
+  .report-header h2 { font-size:11pt; color:#555; font-weight:normal; }
+  .report-meta { display:flex; justify-content:space-between; font-size:9pt; color:#555; margin-bottom:14px; }
+  .report-meta strong { color:#0d2137; }
+  table { width:100%; border-collapse:collapse; font-size:9pt; }
+  thead tr { background:#0d2137; color:#fff; }
+  thead th { padding:8px 10px; text-align:left; font-size:8pt; text-transform:uppercase; letter-spacing:.8px; }
+  tbody tr { border-bottom:1px solid #d4e1ec; }
+  tbody tr:nth-child(even) { background:#f5f9fc; }
+  tbody td { padding:6px 10px; vertical-align:top; }
+  .summary-box { background:#e8f2fc; border:1px solid #2e7fc1; border-radius:6px; padding:12px 16px; margin-bottom:14px; display:flex; gap:30px; flex-wrap:wrap; }
+  .summary-item { text-align:center; }
+  .summary-item .num { font-size:20pt; font-weight:bold; color:#0d2137; line-height:1; }
+  .summary-item .lbl { font-size:8pt; color:#555; text-transform:uppercase; letter-spacing:.8px; margin-top:2px; }
+  .signature-row { margin-top:30px; display:flex; justify-content:space-between; }
+  .sig-block { text-align:center; }
+  .sig-line { border-top:1px solid #333; width:180px; margin:40px auto 3px; }
+  .footer { margin-top:20px; font-size:8pt; color:#aaa; text-align:center; border-top:1px solid #d4e1ec; padding-top:8px; }
+  .badge { display:inline-block; padding:2px 7px; border-radius:10px; font-size:7.5pt; font-weight:bold; }
+  .badge-blue { background:#dbeeff; color:#1a4a7a; }
+  .badge-green { background:#d4f4e2; color:#1a7a4a; }
+  .badge-red { background:#fde8e8; color:#c0392b; }
