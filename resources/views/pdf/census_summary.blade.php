@@ -1,4 +1,7 @@
-<!DOCTYPE html><html><head><meta charset="utf-8"><style>
+<!DOCTYPE html><html>
+
+<head><meta charset="utf-8">
+<style>
   * { margin:0; padding:0; box-sizing:border-box; }
   body { font-family: Arial, sans-serif; font-size: 10pt; color: #111; padding: 24px 32px; }
   .report-header { text-align:center; margin-bottom:16px; border-bottom:3px solid #0d2137; padding-bottom:12px; }
@@ -24,7 +27,9 @@
   .sig-name { font-size:10pt; font-weight:bold; text-transform:uppercase; }
   .sig-title { font-size:9pt; color:#555; }
   .footer { margin-top:16px; font-size:8pt; color:#aaa; text-align:center; border-top:1px solid #d4e1ec; padding-top:8px; }
-</style></head><body>
+</style>
+</head>
+<body>
  
 @php
   $residents = collect($reportData);
@@ -44,9 +49,15 @@
   $senior2 = $residents->filter(fn($r) => isset($r['birthdate']) && \Carbon\Carbon::parse($r['birthdate'])->age >= 60)->count();
  
   // Purok breakdown
-  $puroks = $residents->groupBy('purok')->map->count()->sortKeys();
+ $puroks = $residents
+    ->groupBy('purok')
+    ->map(fn($group) => $group->count())
+    ->sortKeys();
   // Education
-  $eduGroups = $residents->groupBy('educational_attainment')->map->count()->sortByDesc(fn($v) => $v);
+$eduGroups = $residents
+    ->groupBy('educational_attainment')
+    ->map(fn($group) => $group->count())
+    ->sortByDesc(fn($count) => $count);
 @endphp
  
 <div class="report-header">

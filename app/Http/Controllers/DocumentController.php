@@ -162,7 +162,7 @@ class DocumentController extends Controller
         ));
 
         if (in_array($document->doc_type, $certificateTypes)) {
-            $viewName = 'pdf.clearance'; // single template handles all certs
+            $viewName = 'pdf.certificate'; // single template handles all certs
         }
 
         // Reports: masterlist template handles most list reports

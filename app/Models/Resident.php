@@ -3,6 +3,7 @@
 namespace App\Models;
  
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Carbon\Carbon;
@@ -77,12 +78,12 @@ class Resident extends Model
  
     // ── Scopes ────────────────────────────────────────────────
  
-    public function scopeActive($query)
+    public function scopeActive(Builder $query): Builder
     {
         return $query->where('is_active', true);
     }
  
-    public function scopeSearch($query, string $search)
+    public function scopeSearch(Builder $query, string $search): Builder
     {
         return $query->where(function ($q) use ($search) {
             $q->where('first_name',      'LIKE', "%{$search}%")
@@ -92,7 +93,7 @@ class Resident extends Model
         });
     }
  
-    public function scopeFilter($query, array $filters)
+    public function scopeFilter(Builder $query, array $filters): Builder   
     {
         // Basic filters
         $query->when($filters['search']       ?? null, fn($q, $s) => $q->search($s));
