@@ -161,10 +161,9 @@ class DocumentController extends Controller
             array_flip(self::REPORT_TYPES)
         ));
 
-        if (in_array($document->doc_type, $certificateTypes)) {
-            $viewName = 'pdf.certificate'; // single template handles all certs
+       if (in_array($document->doc_type, $certificateTypes)) {
+           $viewName = 'pdf.certificate';
         }
-
         // Reports: masterlist template handles most list reports
         $listReports = [
             'voter_list','senior_list','pwd_list','fourps_list',

@@ -1,174 +1,191 @@
 <!DOCTYPE html>
+
 <html>
-
 <head>
-    <meta charset="utf-8">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="utf-8">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
 
-        body {
-            font-family: 'Times New Roman', Times, serif;
-            font-size: 12pt;
-            color: #111;
-            padding: 40px 60px;
-        }
+body{
+font-family:'Times New Roman',serif;
+font-size:12pt;
+color:#111;
+padding:40px 60px;
+}
 
-        .header {
-            text-align: center;
-            margin-bottom: 16px;
-        }
+.header{
+text-align:center;
+margin-bottom:20px;
+}
 
-        .header h1 {
-            font-size: 15pt;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+.header h1{
+font-size:15pt;
+text-transform:uppercase;
+}
 
-        .header p {
-            font-size: 10pt;
-            color: #444;
-        }
+.header p{
+font-size:10pt;
+}
 
-        .divider {
-            border-top: 3px double #1a3a8f;
-            margin: 14px 0;
-        }
+.divider{
+border-top:3px double #1a3a8f;
+margin:15px 0;
+}
 
-        .cert-title {
-            text-align: center;
-            font-size: 18pt;
-            font-weight: bold;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin: 18px 0;
-            text-decoration: underline;
-        }
+.cert-title{
+text-align:center;
+font-size:18pt;
+font-weight:bold;
+text-transform:uppercase;
+margin:20px 0;
+text-decoration:underline;
+}
 
-        .body {
-            line-height: 1.9;
-            text-align: justify;
-            margin-bottom: 16px;
-        }
+.body{
+line-height:1.9;
+text-align:justify;
+}
 
-        .purpose-box {
-            border: 1px solid #ccc;
-            padding: 10px 16px;
-            margin: 14px 0;
-            background: #f9f9f9;
-            font-style: italic;
-        }
+.purpose-box{
+border:1px solid #ccc;
+background:#f9f9f9;
+padding:10px;
+margin:15px 0;
+}
 
-        .validity {
-            font-size: 10pt;
-            color: #555;
-            margin-bottom: 28px;
-        }
+.sig-block{
+margin-top:50px;
+}
 
-        .sig-block {
-            margin-top: 40px;
-        }
+.sig-line{
+border-top:1px solid #333;
+width:220px;
+margin-top:50px;
+}
 
-        .sig-line {
-            border-top: 1px solid #333;
-            width: 200px;
-            margin-top: 50px;
-        }
+.doc-number{
+position:absolute;
+top:40px;
+right:60px;
+font-size:10pt;
+}
 
-        .doc-number {
-            position: absolute;
-            top: 40px;
-            right: 60px;
-            font-size: 9pt;
-            color: #888;
-        }
+.footer{
+margin-top:40px;
+font-size:9pt;
+} </style>
 
-        .or-number {
-            position: absolute;
-            bottom: 40px;
-            right: 60px;
-            font-size: 9pt;
-            color: #888;
-            text-align: right;
-        }
-    </style>
 </head>
-
 <body>
-    <div class="doc-number">{{ $document->request_number }}</div>
 
-    <div class="header">
-        <p>Republic of the Philippines</p>
-        <p>Province of [Province] • Municipality of [Municipality]</p>
-        <h1>Barangay [Name]</h1>
-        <p>Office of the Punong Barangay</p>
-    </div>
+<div class="doc-number">
+    {{ $doc->doc_number }}
+</div>
 
-    <div class="divider"></div>
+<div class="header">
+    <p>Republic of the Philippines</p>
+    <p>Province of [Province]</p>
+    <p>Municipality of [Municipality]</p>
+    <h1>Barangay [Name]</h1>
+    <p>Office of the Punong Barangay</p>
+</div>
 
-    <div class="cert-title">{{ $document->document_type }}</div>
+<div class="divider"></div>
 
-    <p style="margin-bottom: 14px;"><strong>TO WHOM IT MAY CONCERN:</strong></p>
+<div class="cert-title">
+    {{ strtoupper($doc->doc_type_label) }}
+</div>
 
-    <div class="body">
-        @if($document->document_type === 'Barangay Clearance')
-            <p>This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>,
-                {{ $resident->age }} years old, {{ $resident->civil_status }},
-                a resident of <strong>{{ $resident->address }}</strong>,
-                is known to be a person of good moral character and has no derogatory record on file in this barangay.
-            </p>
-        @elseif($document->document_type === 'Certificate of Indigency')
-            <p>This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>,
-                {{ $resident->age }} years old, {{ $resident->civil_status }},
-                residing at <strong>{{ $resident->address }}</strong>,
-                belongs to an indigent family and is not financially capable of paying for services
-                without assistance from the government.
-            </p>
-        @elseif($document->document_type === 'Certificate of Residency')
-            <p>This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>,
-                {{ $resident->age }} years old, {{ $resident->civil_status }},
-                is a <em>bona fide</em> resident of <strong>{{ $resident->address }}</strong>,
-                this barangay, and has been residing therein for the past years.
-            </p>
-        @else
-            <p>This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>,
-                {{ $resident->age }} years old, {{ $resident->civil_status }},
-                a resident of <strong>{{ $resident->address }}</strong>,
-                is known in this community to be a person of good moral character and law-abiding,
-                with no pending case or derogatory record in this barangay.
-            </p>
-        @endif
+<p><strong>TO WHOM IT MAY CONCERN:</strong></p>
 
-        <div class="purpose-box">
-            This certification is issued upon request of the above-named person for the purpose of:
-            <strong>{{ strtoupper($document->purpose) }}</strong>
-        </div>
+<div class="body">
 
-        <p>Issued this <strong>{{ \Carbon\Carbon::parse($date)->format('jS') }} day of
-                {{ \Carbon\Carbon::parse($date)->format('F Y') }}</strong>
-            at Barangay [Name], [Municipality], [Province], Philippines.
-        </p>
-    </div>
+@if($doc->doc_type === 'clearance')
 
-    <p class="validity">Valid for 30 days from date of issuance.</p>
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>,
+{{ $resident->age }} years old,
+{{ $resident->civil_status }},
+and a resident of
+<strong>{{ $resident->address }}</strong>,
+is known to be of good moral character and has no derogatory record on file in this barangay.
+</p>
 
-    <div class="sig-block">
-        <p>Attested by:</p>
-        <div class="sig-line"></div>
-        <p><strong>[PUNONG BARANGAY NAME]</strong></p>
-        <p>Punong Barangay</p>
-    </div>
+@elseif($doc->doc_type === 'indigency')
 
-    <div class="or-number">
-        @if($document->fee > 0)
-            OR No.: _____________ | Amount: ₱{{ number_format($document->fee, 2) }}
-        @else
-            No Fee Required
-        @endif
-    </div>
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>,
+a resident of <strong>{{ $resident->address }}</strong>,
+belongs to an indigent family and is financially incapable of meeting certain expenses without assistance.
+</p>
+
+@elseif($doc->doc_type === 'residency')
+
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>
+is a bona fide resident of
+<strong>{{ $resident->address }}</strong>
+and has been residing in this barangay.
+</p>
+
+@elseif($doc->doc_type === 'good_moral')
+
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>
+is known in this barangay as a person of good moral character and community standing.
+</p>
+
+@elseif($doc->doc_type === 'business')
+
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>
+has complied with barangay requirements and is hereby granted a Business Clearance.
+</p>
+
+@elseif($doc->doc_type === 'solo_parent')
+
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>
+is recognized as a Solo Parent residing in this barangay.
+</p>
+
+@elseif($doc->doc_type === 'guardianship')
+
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>
+is the lawful guardian of the concerned minor/dependent as recognized by this barangay.
+</p>
+
+@elseif($doc->doc_type === 'cohabitation')
+
+<p>
+This is to certify that <strong>{{ strtoupper($resident->full_name) }}</strong>
+is currently residing with his/her partner in the same household within this barangay.
+</p>
+
+@endif
+
+<div class="purpose-box">
+Purpose:
+<strong>{{ strtoupper($doc->purpose ?? 'OFFICIAL PURPOSES') }}</strong>
+</div>
+
+<p>
+Issued this <strong>{{ $date }}</strong>
+at Barangay [Name], [Municipality], [Province], Philippines.
+</p>
+
+</div>
+
+<div class="sig-block">
+    <div class="sig-line"></div>
+    <strong>[PUNONG BARANGAY NAME]</strong><br>
+    Punong Barangay
+</div>
+
+<div class="footer">
+    Document No.: {{ $doc->doc_number }}
+</div>
+
 </body>
-
 </html>
